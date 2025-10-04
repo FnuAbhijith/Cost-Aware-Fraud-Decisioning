@@ -24,6 +24,18 @@ Given transaction features (amount, device risk, geo distance, etc.), predict fr
 - Serve real-time scoring via **FastAPI** (`/score`, `/health`) with an API key.
 - Provide **explainability** (global SHAP summary; local top-k ready to enable).
 
+## 🧱 Architecture
+
+CSV data ──► ColumnTransformer (numeric passthrough + OneHotEncoder)
+│
+▼
+XGBoostClassifier → P(y=fraud|x)
+│
+Search threshold t to minimize C_FN·FN(t) + C_FP·FP(t)
+│
+▼
+Save artifacts → FastAPI service (/health, /score)
+
 ---
 
 ## 📊 Demo Results (synthetic data included)
@@ -59,8 +71,3 @@ uvicorn api.app:app --host 127.0.0.1 --port 8000 --workers 1
 # export API_KEY=change-me
 # uvicorn api.app:app --host 127.0.0.1 --port 8000 --workers 1
 
-
-
----
-
-## 🧱 Architecture
